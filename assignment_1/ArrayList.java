@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 /**
  * Your implementation of an ArrayList.
  *
@@ -30,7 +31,8 @@ public class ArrayList<T> {
      * to cast an Object[] to a T[] to get the generic typing.
      */
     public ArrayList() {
-
+        backingArray = (T[]) new Object[INITIAL_CAPACITY];
+        size = 0;
     }
 
     /**
@@ -46,7 +48,13 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException  if data is null
      */
     public void addAtIndex(int index, T data) {
-
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (data == null) {
+            throw new IllegalArgumentException();
+        }
+        size++;
     }
 
     /**
@@ -60,8 +68,23 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addToFront(T data) {
-
+        if (data == null) {
+            throw new IllegalArgumentException();
+        }
+        if (size >= backingArray.length) {
+            T[] copy = (T[]) new Object[backingArray.length * 2];
+            for (int i = 0; i < size; i++) {
+                copy[i] = backingArray[i];
+            }
+            backingArray = copy;
+        }
+        for (int i = 1; i < size(); i++) {
+            backingArray[i] = backingArray[i - 1];
+        }
+        backingArray[0] = data;
+        size++;
     }
+
 
     /**
      * Adds the element to the back of the list.
@@ -72,7 +95,18 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addToBack(T data) {
-
+        if (data == null) {
+            throw new IllegalArgumentException();
+        }
+        if (size >= backingArray.length) {
+            T[] copy = (T[]) new Object[backingArray.length * 2];
+            for (int i = 0; i < size; i++) {
+                copy[i] = backingArray[i];
+            }
+            backingArray = copy;
+        }
+        backingArray[size] = data;
+        size++;
     }
 
     /**
@@ -87,7 +121,12 @@ public class ArrayList<T> {
      * @throws java.lang.IndexOutOfBoundsException if index < 0 or index >= size
      */
     public T removeAtIndex(int index) {
-
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        T temp = backingArray[index];
+        size--;
+        return temp;
     }
 
     /**
@@ -101,7 +140,8 @@ public class ArrayList<T> {
      * @throws java.util.NoSuchElementException if the list is empty
      */
     public T removeFromFront() {
-
+        size--;
+        return backingArray[0];
     }
 
     /**
@@ -113,7 +153,13 @@ public class ArrayList<T> {
      * @throws java.util.NoSuchElementException if the list is empty
      */
     public T removeFromBack() {
-
+        if (this.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        T temp = backingArray[size];
+        backingArray[size] = null;
+        size--;
+        return temp;
     }
 
     /**
@@ -126,7 +172,10 @@ public class ArrayList<T> {
      * @throws java.lang.IndexOutOfBoundsException if index < 0 or index >= size
      */
     public T get(int index) {
-
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        return backingArray[index];
     }
 
     /**
@@ -137,7 +186,7 @@ public class ArrayList<T> {
      * @return true if empty, false otherwise
      */
     public boolean isEmpty() {
-
+        return (this.size == 0);
     }
 
     /**
@@ -149,7 +198,8 @@ public class ArrayList<T> {
      * Must be O(1).
      */
     public void clear() {
-
+        backingArray = (T[]) new Object[INITIAL_CAPACITY];
+        size = 0;
     }
 
     /**
